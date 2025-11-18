@@ -1,0 +1,22 @@
+services:
+  petbnb-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "petbnb.ionic-react:latest"
+    ports:
+      - 8100:8100
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app-network
+    tty: true
+    stdin_open: true
+    entrypoint: ["ionic", "serve", "--host=0.0.0.0", "--port=8100", "--no-open"]
+
+networks:
+  app-network:
+    driver: bridge
