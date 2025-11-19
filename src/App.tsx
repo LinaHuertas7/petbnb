@@ -38,6 +38,7 @@ import "./theme/variables.css";
 // Añadir CSS de Leaflet
 import "leaflet/dist/leaflet.css";
 import ListingDetail from "./pages/ListingDetail";
+import Login from "./pages/Login";
 
 setupIonicReact();
 
@@ -60,6 +61,9 @@ const App = () => (
                     </Route>
                     <Route path="/listing/:id">
                         <ListingDetail />
+                    </Route>
+                    <Route path="/login">
+                        <Login />
                     </Route>
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">
