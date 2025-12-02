@@ -37,7 +37,7 @@ const empty: ListingDraft = {
     title: "",
     description: "",
     capacity: 1,
-    services: [],
+    services: [], // ✅ Asegurar que siempre sea un array
     basePrice: 0,
     currency: "USD",
     photos: [],
@@ -52,7 +52,7 @@ const Tab2: React.FC = () => {
     const [createdId, setCreatedId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loadingLocation, setLoadingLocation] = useState(false);
-    const [photoPreview, setPhotoPreview] = useState<string[]>([]); // Nuevo estado para previews
+    const [photoPreview, setPhotoPreview] = useState<string[]>([]);
 
     const update = <K extends keyof ListingDraft>(
         key: K,
@@ -62,9 +62,9 @@ const Tab2: React.FC = () => {
     const toggleService = (svc: string) =>
         update(
             "services",
-            draft.services.includes(svc)
-                ? draft.services.filter((s) => s !== svc)
-                : [...draft.services, svc]
+            (draft.services || []).includes(svc) // ✅ Validar que services exista
+                ? (draft.services || []).filter((s) => s !== svc)
+                : [...(draft.services || []), svc]
         );
 
     const onPhotosChange = useCallback(
@@ -75,10 +75,8 @@ const Tab2: React.FC = () => {
                 return;
             }
 
-            // Guardar los archivos en el draft
             update("photos", files);
 
-            // Crear previews para mostrar
             const previews = await Promise.all(
                 files.map((file) => {
                     return new Promise<string>((resolve) => {
@@ -91,15 +89,20 @@ const Tab2: React.FC = () => {
             );
             setPhotoPreview(previews);
         },
-        [update]
+        []
     );
 
     // Cargar draft al montar
     useEffect(() => {
         storage.getListingDraft().then((saved) => {
             if (saved) {
-                setDraft(saved);
-                // Si el draft tiene fotos guardadas (base64), usarlas como preview
+                // ✅ Asegurar que services siempre sea un array
+                setDraft({
+                    ...saved,
+                    services: saved.services || [],
+                    photos: saved.photos || [],
+                });
+
                 if (saved.photos && saved.photos.length > 0) {
                     setPhotoPreview(saved.photos);
                 }
@@ -113,7 +116,7 @@ const Tab2: React.FC = () => {
             if (draft.title.trim()) {
                 storage.saveListing(draft, true);
             }
-        }, 5000); // Cada 5 segundos en lugar de 3
+        }, 5000);
         return () => clearInterval(timer);
     }, [draft]);
 
@@ -139,7 +142,7 @@ const Tab2: React.FC = () => {
         draft.photos.length > 0 &&
         draft.availabilityRange?.start &&
         draft.availabilityRange?.end &&
-        draft.location; // Agregar validación de ubicación
+        draft.location;
 
     const submit = async () => {
         if (!isValid()) {
@@ -158,7 +161,7 @@ const Tab2: React.FC = () => {
             setCreatedId(res.id);
             console.log("res", res);
             setDraft(empty);
-            setPhotoPreview([]); // Limpiar previews
+            setPhotoPreview([]);
         } catch (err) {
             setSubmitting(false);
             setError("Error al publicar el alojamiento");
@@ -306,7 +309,9 @@ const Tab2: React.FC = () => {
                                 className="svc-item"
                             >
                                 <IonCheckbox
-                                    checked={draft.services.includes(svc)}
+                                    checked={(draft.services || []).includes(
+                                        svc
+                                    )} // ✅ Validar que services exista
                                     onIonChange={() => toggleService(svc)}
                                     justify="start"
                                 >
@@ -391,7 +396,6 @@ const Tab2: React.FC = () => {
                     </IonButton>
                 </IonList>
 
-                {/* Alert de error */}
                 <IonAlert
                     isOpen={!!error}
                     onDidDismiss={() => setError(null)}
@@ -400,7 +404,6 @@ const Tab2: React.FC = () => {
                     buttons={["OK"]}
                 />
 
-                {/* Alert de éxito */}
                 <IonAlert
                     isOpen={!!createdId}
                     onDidDismiss={() => setCreatedId(null)}
