@@ -1,0 +1,232 @@
+.profile-content {
+    --background: #f7f7f7;
+    --overflow: auto;
+}
+
+.profile-content::part(scroll) {
+    overflow-y: auto !important;
+}
+
+/* ==================== PROFILE HEADER ==================== */
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 20px;
+    text-align: center;
+    color: white;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-avatar ion-icon {
+    font-size: 48px;
+}
+
+.profile-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.profile-header p {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* ==================== STATS GRID ==================== */
+.stats-grid {
+    padding: 20px 16px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-card ion-icon {
+    font-size: 32px;
+    color: #ff385c;
+}
+
+.stat-card strong {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+}
+
+.stat-card span {
+    font-size: 12px;
+    color: #717171;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==================== SECTIONS ==================== */
+.section {
+    padding: 0 16px 24px 16px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+.section-title h3 ion-icon {
+    font-size: 24px;
+    color: #ff385c;
+}
+
+/* ==================== EMPTY CARDS ==================== */
+.empty-card {
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.empty-content ion-icon {
+    font-size: 48px;
+    color: #717171;
+    opacity: 0.5;
+}
+
+.empty-content p {
+    margin: 0;
+    color: #717171;
+}
+
+/* ==================== PETS LIST ==================== */
+.pets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pet-mini-card {
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.pet-mini-card:hover {
+    transform: translateX(4px);
+}
+
+.pet-mini-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.pet-mini-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.pet-mini-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.pet-mini-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pet-mini-info strong {
+    font-size: 16px;
+    color: #222;
+}
+
+.pet-mini-info span {
+    font-size: 14px;
+    color: #717171;
+}
+
+/* ==================== BOOKINGS LIST ==================== */
+.bookings-list {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== NOT AUTHENTICATED ==================== */
+.not-authenticated {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+    min-height: calc(100vh - 200px);
+}
+
+.not-auth-icon {
+    font-size: 100px;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.not-authenticated h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 12px 0;
+}
+
+.not-authenticated p {
+    font-size: 16px;
+    color: #717171;
+    margin: 0 0 32px 0;
+    max-width: 400px;
+}

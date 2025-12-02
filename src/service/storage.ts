@@ -1,5 +1,15 @@
 import { Preferences } from "@capacitor/preferences";
 
+const KEYS = {
+    USER: "user",
+    LISTINGS: "listings",
+    FILTERS: "filters",
+    PETS: "pets",
+    BOOKINGS: "bookings", // Agregar
+};
+
+const preferences = Preferences;
+
 class StorageService {
     // Comprimir imagen a base64
     private async compressImage(
@@ -39,7 +49,7 @@ class StorageService {
         });
     }
 
-    // LISTINGS
+    // ==================== LISTINGS ====================
     async saveListing(draft: any, isDraft = false) {
         const key = isDraft ? "listing_draft" : `listing_${Date.now()}`;
 
@@ -142,7 +152,61 @@ class StorageService {
         return listings.filter((l) => l && !l.isDraft);
     }
 
-    // BOOKINGS
+    // ==================== MASCOTAS ====================
+    async getAllPets(): Promise<any[]> {
+        const { value } = await preferences.get({ key: KEYS.PETS });
+        return value ? JSON.parse(value) : [];
+    }
+
+    async getUserPets(userId: string): Promise<any[]> {
+        const allPets = await this.getAllPets();
+        return allPets.filter((pet) => pet.userId === userId);
+    }
+
+    async getPetById(petId: string): Promise<any | null> {
+        const allPets = await this.getAllPets();
+        return allPets.find((pet) => pet.id === petId) || null;
+    }
+
+    async savePet(pet: any): Promise<void> {
+        const allPets = await this.getAllPets();
+        const existingIndex = allPets.findIndex((p) => p.id === pet.id);
+
+        if (existingIndex !== -1) {
+            // Actualizar
+            allPets[existingIndex] = {
+                ...pet,
+                updatedAt: new Date().toISOString(),
+            };
+        } else {
+            // Crear
+            allPets.push({
+                ...pet,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            });
+        }
+
+        await preferences.set({
+            key: KEYS.PETS,
+            value: JSON.stringify(allPets),
+        });
+    }
+
+    async deletePet(petId: string): Promise<void> {
+        const allPets = await this.getAllPets();
+        const filtered = allPets.filter((pet) => pet.id !== petId);
+        await preferences.set({
+            key: KEYS.PETS,
+            value: JSON.stringify(filtered),
+        });
+    }
+
+    async clearAllPets(): Promise<void> {
+        await preferences.remove({ key: KEYS.PETS });
+    }
+
+    // ==================== BOOKINGS ====================
     async saveBooking(booking: any) {
         const bookings = await this.getBookings();
         const newBooking = {
@@ -163,7 +227,28 @@ class StorageService {
         return value ? JSON.parse(value) : [];
     }
 
-    // FILTERS
+    async getUserBookings(userId: string): Promise<any[]> {
+        const allBookings = await this.getBookings();
+        return allBookings.filter((booking) => booking.userId === userId);
+    }
+
+    async updateBookingStatus(
+        bookingId: string,
+        status: string
+    ): Promise<void> {
+        const allBookings = await this.getBookings();
+        const index = allBookings.findIndex((b) => b.id === bookingId);
+        if (index !== -1) {
+            allBookings[index].status = status;
+            allBookings[index].updatedAt = new Date().toISOString();
+            await preferences.set({
+                key: KEYS.BOOKINGS,
+                value: JSON.stringify(allBookings),
+            });
+        }
+    }
+
+    // ==================== FILTERS ====================
     async saveFilters(filters: any) {
         await Preferences.set({
             key: "search_filters",

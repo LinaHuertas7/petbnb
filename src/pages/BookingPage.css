@@ -1,246 +1,377 @@
 .booking-content {
     --background: #f7f7f7;
+    --overflow: auto;
 }
 
 .booking-container {
     max-width: 800px;
     margin: 0 auto;
-    padding-bottom: 40px;
+    padding: 20px 16px 40px 16px;
 }
 
-/* Header con imagen */
-.booking-header {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    overflow: hidden;
+/* ==================== LISTING SUMMARY ==================== */
+.listing-summary {
+    margin: 0 0 20px 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-.booking-header-image {
-    width: 100%;
-    height: 100%;
+.summary-header {
+    display: flex;
+    gap: 16px;
+}
+
+.summary-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
     object-fit: cover;
 }
 
-.booking-header-placeholder {
-    width: 100%;
-    height: 100%;
+.summary-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 80px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 48px;
 }
 
-.booking-header-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    padding: 24px;
-    color: white;
+.summary-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.booking-header-overlay h1 {
-    margin: 0 0 8px 0;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.booking-header-overlay p {
+.summary-info h3 {
     margin: 0;
-    font-size: 14px;
-    opacity: 0.9;
-}
-
-/* Formulario */
-.booking-form {
-    padding: 24px 16px;
-}
-
-.booking-form>h2 {
-    font-size: 28px;
+    font-size: 18px;
     font-weight: 700;
     color: #222;
-    margin: 0 0 24px 0;
 }
 
-.booking-card {
+.summary-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #717171;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.summary-info p ion-icon {
+    font-size: 16px;
+}
+
+.summary-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.summary-price strong {
+    font-size: 20px;
+    color: #222;
+}
+
+.summary-price span {
+    font-size: 13px;
+}
+
+/* ==================== SECTION CARDS ==================== */
+.section-card {
     margin: 0 0 20px 0;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .section-title {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 .section-title ion-icon {
-    font-size: 24px;
+    font-size: 28px;
     color: #ff385c;
 }
 
-/* Contador de mascotas */
-.pet-counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 20px 0;
-}
-
-.pet-counter ion-button {
-    --border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.pet-count {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 100px;
-}
-
-.pet-count strong {
-    font-size: 32px;
+.section-title h2 {
+    margin: 0;
+    font-size: 20px;
     font-weight: 700;
     color: #222;
 }
 
-.pet-count span {
+/* ==================== DATES ==================== */
+.date-list {
+    background: transparent;
+    margin-bottom: 16px;
+}
+
+.date-list ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+}
+
+.date-list ion-datetime {
+    margin-top: 8px;
+}
+
+.days-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* ==================== PETS SELECTION ==================== */
+.no-pets-message {
+    text-align: center;
+    padding: 20px;
+    color: #717171;
+}
+
+.pets-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pet-select-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 2px solid #ebebeb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pet-select-item.selected {
+    border-color: #ff385c;
+    background: rgba(255, 56, 92, 0.05);
+}
+
+.pet-select-item:hover {
+    border-color: #ff385c;
+}
+
+.pet-select-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.pet-select-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.pet-select-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pet-select-info strong {
+    font-size: 16px;
+    color: #222;
+}
+
+.pet-select-info span {
     font-size: 14px;
     color: #717171;
 }
 
 .capacity-info {
+    margin: 0;
+    padding: 12px;
+    background: #fff3cd;
+    border-radius: 8px;
+    color: #856404;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px;
-    background: #f0f0f0;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #717171;
 }
 
 .capacity-info ion-icon {
-    font-size: 18px;
+    font-size: 20px;
 }
 
-/* Noches info */
-.nights-info {
-    text-align: center;
-    padding: 12px;
-    background: #f0f0f0;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #222;
-    margin-top: 16px;
-}
-
-/* Textarea */
-.special-requests {
-    --background: #f7f7f7;
+/* ==================== REQUESTS ==================== */
+.requests-textarea {
     --padding-start: 12px;
     --padding-end: 12px;
     --padding-top: 12px;
     --padding-bottom: 12px;
-    border-radius: 8px;
-    font-size: 15px;
+    border: 1px solid #ebebeb;
+    border-radius: 12px;
+    margin-top: 8px;
 }
 
-/* Servicios */
-.services-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.services-list ion-chip {
-    margin: 0;
-    --background: #f0f0f0;
-    --color: #222;
-    font-weight: 600;
-}
-
-.services-list ion-chip span {
-    color: #00a699;
-    margin-right: 4px;
-}
-
-/* Resumen de precio */
+/* ==================== PRICE SUMMARY ==================== */
 .price-summary {
-    background: linear-gradient(135deg, #fff 0%, #f7f7f7 100%);
-}
-
-.price-breakdown {
-    font-size: 15px;
+    margin: 0 0 20px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 
 .price-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 12px 0;
-    color: #717171;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.price-divider {
-    height: 1px;
-    background: #e0e0e0;
-    margin: 12px 0;
+.price-row:last-child {
+    border-bottom: none;
 }
 
 .price-row.total {
-    font-size: 20px;
-    color: #222;
+    padding-top: 16px;
+    font-size: 18px;
 }
 
-/* Botón de reservar */
-.booking-button {
+.total-amount {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ==================== ACTIONS ==================== */
+.booking-actions {
+    padding: 0 0 20px 0;
+}
+
+.reserve-button {
     --background: linear-gradient(135deg, #ff385c 0%, #e31c5f 100%);
     --border-radius: 12px;
-    --box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+    --box-shadow: 0 4px 16px rgba(255, 56, 92, 0.4);
     height: 56px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     text-transform: none;
-    margin: 24px 0 12px 0;
 }
 
-.booking-disclaimer {
+.reserve-button:hover:not(:disabled) {
+    --box-shadow: 0 6px 20px rgba(255, 56, 92, 0.5);
+}
+
+/* ==================== SUCCESS MODAL ==================== */
+.success-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
     text-align: center;
-    font-size: 13px;
-    color: #717171;
-    margin: 0;
-    line-height: 1.5;
+    min-height: 100%;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-    .booking-header {
-        height: 220px;
+.success-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4aa 0%, #00a896 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
     }
 
-    .booking-header-overlay h1 {
-        font-size: 20px;
+    100% {
+        transform: scale(1);
+    }
+}
+
+.success-modal h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 12px 0;
+}
+
+.success-modal p {
+    font-size: 16px;
+    color: #717171;
+    margin: 0 0 24px 0;
+}
+
+.booking-id {
+    font-family: monospace;
+    font-size: 14px;
+    background: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 32px !important;
+}
+
+.success-modal ion-button {
+    margin-top: 12px;
+    --border-radius: 12px;
+    height: 48px;
+    font-weight: 700;
+}
+
+/* ==================== ERROR STATE ==================== */
+.error-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.error-state h2 {
+    color: #222;
+    margin-bottom: 24px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .booking-container {
+        padding: 16px 12px 40px 12px;
     }
 
-    .booking-form>h2 {
+    .summary-header {
+        flex-direction: column;
+    }
+
+    .summary-image,
+    .summary-placeholder {
+        width: 100%;
+        height: 200px;
+    }
+
+    .price-row.total {
+        font-size: 16px;
+    }
+
+    .total-amount {
         font-size: 24px;
-    }
-
-    .pet-count strong {
-        font-size: 28px;
     }
 }

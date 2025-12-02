@@ -1,0 +1,226 @@
+.pets-content {
+    --background: #f7f7f7;
+}
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+    min-height: calc(100vh - 200px);
+}
+
+.empty-icon {
+    font-size: 100px;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.empty-state h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 12px 0;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #717171;
+    margin: 0 0 32px 0;
+    max-width: 400px;
+}
+
+.profile-content {
+    --overflow: auto;
+}
+
+.add-first-pet {
+    --background: linear-gradient(135deg, #ff385c 0%, #e31c5f 100%);
+    --border-radius: 12px;
+    --box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+    height: 52px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: none;
+}
+
+/* ==================== PETS CONTAINER ==================== */
+.pets-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 100px 16px;
+}
+
+.pets-header {
+    margin-bottom: 24px;
+}
+
+.pets-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 8px 0;
+}
+
+.pets-header p {
+    font-size: 16px;
+    color: #717171;
+    margin: 0;
+}
+
+/* ==================== PETS GRID ==================== */
+.pets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ==================== PET CARD ==================== */
+.pet-card {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pet-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.pet-card-header {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.pet-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pet-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.pet-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.pet-actions ion-button {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: #222;
+    --border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ==================== PET CARD CONTENT ==================== */
+.pet-card-content {
+    padding: 20px !important;
+}
+
+.pet-name-section {
+    margin-bottom: 16px;
+}
+
+.pet-name-section h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 6px 0;
+}
+
+.pet-species {
+    font-size: 15px;
+    color: #717171;
+    font-weight: 600;
+}
+
+/* ==================== PET INFO ==================== */
+.pet-info-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.pet-info-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pet-info-item .label {
+    font-size: 12px;
+    color: #717171;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.pet-info-item .value {
+    font-size: 16px;
+    color: #222;
+    font-weight: 700;
+}
+
+/* ==================== PET CHIPS ==================== */
+.pet-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pet-chips ion-chip {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    height: 28px;
+}
+
+.pet-chips ion-chip span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .pets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pets-header h2 {
+        font-size: 24px;
+    }
+
+    .empty-state {
+        padding: 40px 20px;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+    }
+
+    .pet-card-header {
+        height: 180px;
+    }
+}
