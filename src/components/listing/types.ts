@@ -7,6 +7,7 @@ export interface ListingDraft {
     currency: string;
     availabilityRange?: { start: string; end: string };
     photos: File[];
+    location?: { lat: number; lng: number; address?: string };
 }
 
 export const SERVICES = [

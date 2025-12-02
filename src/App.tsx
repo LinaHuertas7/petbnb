@@ -1,19 +1,9 @@
 import { Redirect, Route } from "react-router-dom";
-import {
-    IonApp,
-    IonIcon,
-    IonLabel,
-    IonRouterOutlet,
-    IonTabBar,
-    IonTabButton,
-    IonTabs,
-    setupIonicReact,
-} from "@ionic/react";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, square, triangle } from "ionicons/icons";
-import Tab1 from "./pages/Tab1";
-import Tab2 from "./pages/Tab2";
-import Tab3 from "./pages/Tab3";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { AuthProvider } from "./context/AuthContext";
 
 /* Core CSS */
 import "@ionic/react/css/core.css";
@@ -21,11 +11,7 @@ import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
 import "@ionic/react/css/typography.css";
 
-/* Quitar imports dark.* para mantener modo claro */
-import "./theme/variables.css";
-import "leaflet/dist/leaflet.css";
-
-/* Utils opcionales */
+/* Optional CSS utils that can be commented out */
 import "@ionic/react/css/padding.css";
 import "@ionic/react/css/float-elements.css";
 import "@ionic/react/css/text-alignment.css";
@@ -35,53 +21,24 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-// Añadir CSS de Leaflet
-import "leaflet/dist/leaflet.css";
-import ListingDetail from "./pages/ListingDetail";
-import Login from "./pages/Login";
+import Tabs from "./pages/Tabs";
 
 setupIonicReact();
 
 const App = () => (
     <IonApp>
-        <IonReactRouter>
-            <IonTabs>
+        <AuthProvider>
+            <IonReactRouter>
                 <IonRouterOutlet>
-                    <Route exact path="/tab1">
-                        <Tab1 />
-                    </Route>
-                    <Route exact path="/tab2">
-                        <Tab2 />
-                    </Route>
-                    <Route path="/tab3">
-                        <Tab3 />
-                    </Route>
+                    <Route exact path="/login" component={Login} />
+                    <Route exact path="/register" component={Register} />
+                    <Route path="/tabs" component={Tabs} />
                     <Route exact path="/">
-                        <Redirect to="/tab1" />
-                    </Route>
-                    <Route path="/listing/:id">
-                        <ListingDetail />
-                    </Route>
-                    <Route path="/login">
-                        <Login />
+                        <Redirect to="/tabs/tab1" />
                     </Route>
                 </IonRouterOutlet>
-                <IonTabBar slot="bottom">
-                    <IonTabButton tab="tab2" href="/tab2">
-                        <IonIcon aria-hidden="true" icon={ellipse} />
-                        <IonLabel>Publicar</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="tab1" href="/tab1">
-                        <IonIcon aria-hidden="true" icon={triangle} />
-                        <IonLabel>Mapa</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="tab3" href="/tab3">
-                        <IonIcon aria-hidden="true" icon={square} />
-                        <IonLabel>Tab 3</IonLabel>
-                    </IonTabButton>
-                </IonTabBar>
-            </IonTabs>
-        </IonReactRouter>
+            </IonReactRouter>
+        </AuthProvider>
     </IonApp>
 );
 

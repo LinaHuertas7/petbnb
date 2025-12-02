@@ -4,8 +4,7 @@ export const mockCaregivers: Caregiver[] = [
     {
         id: "1",
         name: "Casa de Luna",
-        lat: 4.711,
-        lng: -74.0059,
+        location: [4.711, -74.0059],
         price: 20000,
         petTypes: ["perro"],
         rating: 4.7,
@@ -23,8 +22,7 @@ export const mockCaregivers: Caregiver[] = [
     {
         id: "2",
         name: "Hogar de Max",
-        lat: 4.7169,
-        lng: -74.0121,
+        location: [4.7169, -74.0121],
         price: 18000,
         petTypes: ["gato", "perro"],
         rating: 4.5,
@@ -41,8 +39,7 @@ export const mockCaregivers: Caregiver[] = [
     {
         id: "3",
         name: "Refugio Canino Bogotá",
-        lat: 4.7056,
-        lng: -74.0094,
+        location: [4.7056, -74.0094],
         price: 22000,
         petTypes: ["perro"],
         rating: 4.8,
@@ -60,8 +57,7 @@ export const mockCaregivers: Caregiver[] = [
     {
         id: "4",
         name: "Cuidado Felino",
-        lat: 4.709,
-        lng: -74.0007,
+        location: [4.709, -74.0007],
         price: 25000,
         petTypes: ["gato"],
         rating: 4.9,

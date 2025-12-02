@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
     IonPage,
     IonHeader,
@@ -18,9 +18,9 @@ import {
     IonDatetime,
     IonSelect,
     IonSelectOption,
-    IonNote,
     IonSpinner,
     IonProgressBar,
+    IonAlert,
 } from "@ionic/react";
 import {
     ListingDraft,
@@ -28,6 +28,10 @@ import {
     createListing,
 } from "../components/listing/types";
 import "./Tab2.css";
+import { storage } from "../service/storage";
+import { Geolocation } from "@capacitor/geolocation";
+import { useAuth } from "../context/AuthContext";
+import { useHistory } from "react-router-dom";
 
 const empty: ListingDraft = {
     title: "",
@@ -41,10 +45,14 @@ const empty: ListingDraft = {
 };
 
 const Tab2: React.FC = () => {
+    const { isAuthenticated } = useAuth();
+    const history = useHistory();
     const [draft, setDraft] = useState<ListingDraft>(empty);
     const [submitting, setSubmitting] = useState(false);
     const [createdId, setCreatedId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [loadingLocation, setLoadingLocation] = useState(false);
+    const [photoPreview, setPhotoPreview] = useState<string[]>([]); // Nuevo estado para previews
 
     const update = <K extends keyof ListingDraft>(
         key: K,
@@ -60,12 +68,69 @@ const Tab2: React.FC = () => {
         );
 
     const onPhotosChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            const files = e.target.files ? Array.from(e.target.files) : [];
-            update("photos", files.slice(0, 8)); // máximo 8
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
+            const files = Array.from(e.target.files || []);
+            if (files.length > 8) {
+                setError("Máximo 8 fotos");
+                return;
+            }
+
+            // Guardar los archivos en el draft
+            update("photos", files);
+
+            // Crear previews para mostrar
+            const previews = await Promise.all(
+                files.map((file) => {
+                    return new Promise<string>((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () =>
+                            resolve(reader.result as string);
+                        reader.readAsDataURL(file);
+                    });
+                })
+            );
+            setPhotoPreview(previews);
         },
-        []
+        [update]
     );
+
+    // Cargar draft al montar
+    useEffect(() => {
+        storage.getListingDraft().then((saved) => {
+            if (saved) {
+                setDraft(saved);
+                // Si el draft tiene fotos guardadas (base64), usarlas como preview
+                if (saved.photos && saved.photos.length > 0) {
+                    setPhotoPreview(saved.photos);
+                }
+            }
+        });
+    }, []);
+
+    // Auto-guardar draft
+    useEffect(() => {
+        const timer = setInterval(() => {
+            if (draft.title.trim()) {
+                storage.saveListing(draft, true);
+            }
+        }, 5000); // Cada 5 segundos en lugar de 3
+        return () => clearInterval(timer);
+    }, [draft]);
+
+    const getCurrentLocation = async () => {
+        setLoadingLocation(true);
+        try {
+            const position = await Geolocation.getCurrentPosition();
+            update("location", {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+                address: "Ubicación actual",
+            });
+        } catch (error) {
+            setError("No se pudo obtener la ubicación");
+        }
+        setLoadingLocation(false);
+    };
 
     const isValid = () =>
         draft.title.trim() &&
@@ -73,7 +138,8 @@ const Tab2: React.FC = () => {
         draft.basePrice > 0 &&
         draft.photos.length > 0 &&
         draft.availabilityRange?.start &&
-        draft.availabilityRange?.end;
+        draft.availabilityRange?.end &&
+        draft.location; // Agregar validación de ubicación
 
     const submit = async () => {
         if (!isValid()) {
@@ -82,12 +148,34 @@ const Tab2: React.FC = () => {
         }
         setError(null);
         setSubmitting(true);
-        const res = await createListing(draft);
-        setSubmitting(false);
-        setCreatedId(res.id);
-        // Reset (mantén fotos opcional)
-        setDraft(empty);
+
+        try {
+            const id = await storage.saveListing(draft, false);
+            await storage.deleteDraft();
+
+            const res = await createListing(draft);
+            setSubmitting(false);
+            setCreatedId(res.id);
+            console.log("res", res);
+            setDraft(empty);
+            setPhotoPreview([]); // Limpiar previews
+        } catch (err) {
+            setSubmitting(false);
+            setError("Error al publicar el alojamiento");
+            console.error(err);
+        }
     };
+
+    // Redirigir si no está autenticado
+    useEffect(() => {
+        if (!isAuthenticated) {
+            history.push("/login");
+        }
+    }, [isAuthenticated, history]);
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <IonPage>
@@ -182,23 +270,27 @@ const Tab2: React.FC = () => {
                             Disponibilidad (rango) *
                         </IonLabel>
                         <IonDatetime
-                            draggable
                             presentation="date"
+                            multiple={true}
                             value={
-                                draft.availabilityRange?.start &&
-                                draft.availabilityRange?.end
-                                    ? `${draft.availabilityRange.start}/${draft.availabilityRange.end}`
+                                draft.availabilityRange
+                                    ? [
+                                          draft.availabilityRange.start,
+                                          draft.availabilityRange.end,
+                                      ]
                                     : undefined
                             }
                             onIonChange={(e) => {
-                                const v = e.detail.value as string | undefined;
-                                if (!v)
-                                    return update(
-                                        "availabilityRange",
-                                        undefined
-                                    );
-                                const [start, end] = v.split("/");
-                                update("availabilityRange", { start, end });
+                                const values = e.detail.value as string[];
+                                if (!values || values.length < 2) {
+                                    update("availabilityRange", undefined);
+                                    return;
+                                }
+                                const sorted = values.sort();
+                                update("availabilityRange", {
+                                    start: sorted[0],
+                                    end: sorted[sorted.length - 1],
+                                });
                             }}
                         />
                     </IonItem>
@@ -236,23 +328,59 @@ const Tab2: React.FC = () => {
                             className="photos-input"
                         />
                         <div className="photos-preview">
-                            {draft.photos.map((f, i) => (
+                            {photoPreview.map((preview, i) => (
                                 <div className="photo-thumb" key={i}>
                                     <img
-                                        src={URL.createObjectURL(f)}
-                                        alt={f.name}
+                                        src={preview}
+                                        alt={`Preview ${i + 1}`}
                                     />
+                                    <button
+                                        type="button"
+                                        className="remove-photo"
+                                        onClick={() => {
+                                            const newPhotos =
+                                                draft.photos.filter(
+                                                    (_, idx) => idx !== i
+                                                );
+                                            const newPreviews =
+                                                photoPreview.filter(
+                                                    (_, idx) => idx !== i
+                                                );
+                                            update("photos", newPhotos);
+                                            setPhotoPreview(newPreviews);
+                                        }}
+                                    >
+                                        ✕
+                                    </button>
                                 </div>
                             ))}
                         </div>
+                        {photoPreview.length > 0 && (
+                            <p className="photo-count-text">
+                                {photoPreview.length} de 8 fotos seleccionadas
+                            </p>
+                        )}
                     </div>
 
-                    {error && <IonNote color="danger">{error}</IonNote>}
-                    {createdId && (
-                        <IonNote color="success">
-                            Creado ID: {createdId}
-                        </IonNote>
-                    )}
+                    <IonItem>
+                        <IonLabel position="stacked">Ubicación *</IonLabel>
+                        <IonButton
+                            expand="block"
+                            fill="outline"
+                            onClick={getCurrentLocation}
+                            disabled={loadingLocation}
+                        >
+                            {loadingLocation ? (
+                                <IonSpinner name="dots" />
+                            ) : draft.location ? (
+                                `📍 ${draft.location.lat.toFixed(
+                                    4
+                                )}, ${draft.location.lng.toFixed(4)}`
+                            ) : (
+                                "Obtener ubicación actual"
+                            )}
+                        </IonButton>
+                    </IonItem>
 
                     <IonButton
                         expand="block"
@@ -262,6 +390,24 @@ const Tab2: React.FC = () => {
                         {submitting ? <IonSpinner name="dots" /> : "Publicar"}
                     </IonButton>
                 </IonList>
+
+                {/* Alert de error */}
+                <IonAlert
+                    isOpen={!!error}
+                    onDidDismiss={() => setError(null)}
+                    header="Error"
+                    message={error || ""}
+                    buttons={["OK"]}
+                />
+
+                {/* Alert de éxito */}
+                <IonAlert
+                    isOpen={!!createdId}
+                    onDidDismiss={() => setCreatedId(null)}
+                    header="¡Publicación exitosa!"
+                    message={`Tu alojamiento ha sido creado con ID: ${createdId}`}
+                    buttons={["Aceptar"]}
+                />
             </IonContent>
         </IonPage>
     );

@@ -21,6 +21,7 @@ import {
 import { useParams } from "react-router-dom";
 import { getCaregiver } from "../data/caregivers";
 import "./ListingDetail.css";
+import { db } from "../service/database";
 
 interface RouteParams {
     id: string;
@@ -60,15 +61,27 @@ const ListingDetail: React.FC = () => {
     };
     const addPet = () => setPets((p) => [...p, { name: "", species: "perro" }]);
 
-    //const canSubmit =
-    range.start && range.end && pets.every((p) => p.name.trim());
+    const canSubmit =
+        !!range.start &&
+        !!range.end &&
+        pets.every((p) => p.name.trim().length > 0);
 
     const submit = async () => {
         if (!canSubmit) return;
         setSending(true);
+
+        const bookingId = await db.saveBooking({
+            caregiverId: id,
+            startDate: range.start,
+            endDate: range.end,
+            pets: pets,
+            notes: notes,
+            status: "pending",
+        });
+
         await new Promise((r) => setTimeout(r, 500));
         setSending(false);
-        setOk("Reserva creada");
+        setOk(`Reserva creada: ${bookingId}`);
     };
 
     return (
@@ -76,7 +89,7 @@ const ListingDetail: React.FC = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>{caregiver.name}</IonTitle>
-                    <IonBackButton defaultHref="/tab1" slot="start" />
+                    <IonBackButton defaultHref="/tab1" />
                 </IonToolbar>
             </IonHeader>
             <IonContent className="detail-content listing" fullscreen>
@@ -121,7 +134,7 @@ const ListingDetail: React.FC = () => {
                 <IonItem>
                     <IonLabel position="stacked">Rango fechas *</IonLabel>
                     <IonDatetime
-                        presentation="date-range"
+                        presentation={"date-range" as any}
                         value={
                             range.start && range.end
                                 ? `${range.start}/${range.end}`

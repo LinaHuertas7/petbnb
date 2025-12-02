@@ -1,102 +1,184 @@
 import React, { useState } from "react";
 import {
     IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonItem,
-    IonLabel,
     IonInput,
     IonButton,
-    IonFooter,
+    IonText,
+    IonIcon,
+    IonSpinner,
 } from "@ionic/react";
-import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import {
+    eyeOutline,
+    eyeOffOutline,
+    mailOutline,
+    lockClosedOutline,
+} from "ionicons/icons";
+import { useAuth } from "../context/AuthContext";
 import "./Login.css";
 
 const Login: React.FC = () => {
-    const { register, handleSubmit } = useForm();
-    const history = useHistory();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const history = useHistory();
+    const { login } = useAuth();
 
-    const onSubmit = (data: any) => {
-        // Implement login logic here
-        console.log(data);
-        // Redirect to another page on successful login
-        history.push("/tab1");
+    const handleLogin = async () => {
+        setError("");
+
+        if (!email || !password) {
+            setError("Por favor completa todos los campos");
+            return;
+        }
+
+        if (!email.includes("@")) {
+            setError("Por favor ingresa un email válido");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            await login(email, password);
+            history.push("/tabs/tab1");
+        } catch (err) {
+            setError("Credenciales inválidas");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <IonPage className="login-page">
-            <IonHeader>
-                <IonToolbar className="login-toolbar">
-                    <IonTitle className="login-title">Login</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+        <IonPage>
             <IonContent className="login-content">
-                <IonCard className="login-card">
-                    <IonCardHeader className="login-card-header">
-                        <IonCardTitle className="login-card-title">
-                            Bienvenido
-                        </IonCardTitle>
-                    </IonCardHeader>
-                    <IonCardContent className="login-card-content">
-                        <form
-                            onSubmit={handleSubmit(onSubmit)}
-                            className="login-form"
-                        >
-                            <IonItem className="login-item">
-                                <IonLabel position="floating">Nombre</IonLabel>
-                                <IonInput
-                                    {...register("nombre")}
-                                    required
-                                    className="login-input"
-                                ></IonInput>
-                            </IonItem>
-                            <IonItem className="login-item">
-                                <IonLabel position="floating">
-                                    Contraseña
-                                </IonLabel>
-                                <IonInput
-                                    type="password"
-                                    {...register("password")}
-                                    required
-                                    className="login-input"
-                                ></IonInput>
-                            </IonItem>
-                            {error && <p className="login-error">{error}</p>}
-                            <IonButton
-                                expand="full"
-                                type="submit"
-                                className="login-submit-btn"
+                <div className="login-container">
+                    {/* Logo y título */}
+                    <div className="login-header">
+                        <div className="logo">🐾</div>
+                        <h1>Bienvenido a PetBnB</h1>
+                        <p className="subtitle">
+                            El hogar perfecto para tu mascota
+                        </p>
+                    </div>
+
+                    {/* Formulario */}
+                    <div className="login-form">
+                        {error && (
+                            <div className="error-message">
+                                <IonText color="danger">{error}</IonText>
+                            </div>
+                        )}
+
+                        <div className="input-group">
+                            <IonIcon
+                                icon={mailOutline}
+                                className="input-icon"
+                            />
+                            <IonInput
+                                type="email"
+                                placeholder="Correo electrónico"
+                                value={email}
+                                onIonInput={(e) =>
+                                    setEmail(e.detail.value || "")
+                                }
+                                onKeyPress={(e) =>
+                                    e.key === "Enter" && handleLogin()
+                                }
+                                className="custom-input"
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <IonIcon
+                                icon={lockClosedOutline}
+                                className="input-icon"
+                            />
+                            <IonInput
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Contraseña"
+                                value={password}
+                                onIonInput={(e) =>
+                                    setPassword(e.detail.value || "")
+                                }
+                                onKeyPress={(e) =>
+                                    e.key === "Enter" && handleLogin()
+                                }
+                                className="custom-input"
+                            />
+                            <IonIcon
+                                icon={showPassword ? eyeOffOutline : eyeOutline}
+                                className="toggle-password"
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
+
+                        <div className="forgot-password">
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                }}
                             >
-                                Ingresar
-                            </IonButton>
-                        </form>
-                    </IonCardContent>
-                </IonCard>
-            </IonContent>
-            <IonFooter className="login-footer">
-                <IonToolbar className="login-footer-toolbar">
-                    <div className="footer-content">
-                        <IonButton fill="clear" className="footer-btn">
-                            ¿No tienes cuenta?
-                        </IonButton>
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+
                         <IonButton
                             expand="block"
-                            fill="clear"
-                            className="footer-register-btn"
+                            onClick={handleLogin}
+                            disabled={loading}
+                            className="login-button"
                         >
-                            Regístrate aquí
+                            {loading ? (
+                                <IonSpinner name="dots" />
+                            ) : (
+                                "Iniciar sesión"
+                            )}
                         </IonButton>
+
+                        <div className="divider">
+                            <span>o continúa con</span>
+                        </div>
+
+                        <div className="social-buttons">
+                            <button className="social-button">
+                                <span className="social-icon">🔵</span>
+                                Facebook
+                            </button>
+                            <button className="social-button">
+                                <span className="social-icon">🔴</span>
+                                Google
+                            </button>
+                        </div>
+
+                        <div className="signup-link">
+                            ¿No tienes una cuenta?{" "}
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    history.push("/register");
+                                }}
+                            >
+                                Regístrate
+                            </a>
+                        </div>
                     </div>
-                </IonToolbar>
-            </IonFooter>
+
+                    {/* Footer */}
+                    <div className="login-footer">
+                        <p>Al continuar, aceptas nuestros</p>
+                        <p>
+                            <a href="#">Términos de servicio</a> y{" "}
+                            <a href="#">Política de privacidad</a>
+                        </p>
+                    </div>
+                </div>
+            </IonContent>
         </IonPage>
     );
 };

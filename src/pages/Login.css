@@ -1,0 +1,251 @@
+.login-content {
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.login-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.login-form {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.error-message {
+    background: #fee;
+    border-left: 4px solid #ff385c;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.error-message ion-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #717171;
+    font-size: 20px;
+    z-index: 10;
+}
+
+.custom-input {
+    --background: #f7f7f7;
+    --padding-start: 48px;
+    --padding-end: 16px;
+    --border-radius: 12px;
+    --placeholder-color: #999;
+    --color: #222;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.custom-input:focus-within {
+    --background: white;
+    border-color: #ff385c;
+    box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.1);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #717171;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 24px;
+}
+
+.forgot-password a {
+    color: #ff385c;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.login-button {
+    --background: linear-gradient(135deg, #ff385c 0%, #e31c5f 100%);
+    --background-activated: #e31c5f;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+    height: 56px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.divider {
+    text-align: center;
+    margin: 24px 0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+.divider span {
+    background: white;
+    padding: 0 12px;
+    color: #717171;
+    font-size: 14px;
+}
+
+.social-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    color: #222;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.social-button:hover {
+    border-color: #ff385c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.social-icon {
+    font-size: 20px;
+}
+
+.signup-link {
+    text-align: center;
+    font-size: 14px;
+    color: #717171;
+}
+
+.signup-link a {
+    color: #ff385c;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.login-footer p {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 4px 0;
+}
+
+.login-footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .login-container {
+        padding: 16px;
+    }
+
+    .login-form {
+        padding: 24px 20px;
+    }
+
+    .login-header h1 {
+        font-size: 24px;
+    }
+
+    .social-buttons {
+        grid-template-columns: 1fr;
+    }
+}
