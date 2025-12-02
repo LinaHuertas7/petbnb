@@ -4,6 +4,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { AuthProvider } from "./context/AuthContext";
+import ListingDetailPage from "./pages/ListingDetailPage";
 
 /* Core CSS */
 import "@ionic/react/css/core.css";
@@ -36,6 +37,11 @@ const App = () => (
                     <Route exact path="/">
                         <Redirect to="/tabs/tab1" />
                     </Route>
+                    <Route
+                        exact
+                        path="/listing/:id"
+                        component={ListingDetailPage}
+                    />
                 </IonRouterOutlet>
             </IonReactRouter>
         </AuthProvider>

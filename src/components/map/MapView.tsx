@@ -1,68 +1,99 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
+import "./MapView.css";
 
-export type Caregiver = {
-    id: string;
-    name: string;
-    location: [number, number]; // Cambiado de lat/lng separados
-    price: number;
-    petTypes: string[];
-    rating?: number;
-    capacity?: number;
-    services?: string[];
-    photos?: string[];
-    description?: string;
+// Icono de ubicación del usuario mejorado
+const createUserLocationIcon = () => {
+    const html = `
+        <div class="user-location-marker">
+            📍
+        </div>
+    `;
+
+    return L.divIcon({
+        html,
+        className: "custom-marker",
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16],
+    });
 };
 
-// Fix iconos en Vite
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: new URL(
-        "leaflet/dist/images/marker-icon-2x.png",
-        import.meta.url
-    ).toString(),
-    iconUrl: new URL(
-        "leaflet/dist/images/marker-icon.png",
-        import.meta.url
-    ).toString(),
-    shadowUrl: new URL(
-        "leaflet/dist/images/marker-shadow.png",
-        import.meta.url
-    ).toString(),
-});
+// Icono de alojamiento mejorado
+const createListingIcon = () => {
+    const html = `
+        <div class="listing-marker">
+            🏠
+        </div>
+    `;
 
-// Icono personalizado para ubicación del usuario
-const userIcon = new L.Icon({
-    iconUrl:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iOCIgZmlsbD0iIzAwN0FGRiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIi8+Cjwvc3ZnPg==",
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-});
+    return L.divIcon({
+        html,
+        className: "custom-marker",
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+        popupAnchor: [0, -18],
+    });
+};
+
+interface Caregiver {
+    id: string;
+    name: string;
+    description?: string;
+    location: [number, number];
+    rating: number;
+    price: number;
+    currency?: string;
+    photos?: string[];
+    services?: string[];
+    capacity?: number;
+}
 
 interface MapViewProps {
     center: [number, number];
     caregivers: Caregiver[];
-    zoom?: number;
-    onMarkerClick?: (id: string) => void;
     userLocation?: [number, number] | null;
+    onMarkerClick?: (id: string) => void;
 }
 
-const ResizeHelper: React.FC = () => {
+// Componente mejorado que solo centra cuando la ubicación cambia significativamente
+const MapCenterController: React.FC<{
+    center: [number, number];
+    userLocation?: [number, number] | null;
+}> = ({ center, userLocation }) => {
     const map = useMap();
-    useEffect(() => {
-        // Esperar a que el DOM esté listo
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 100);
+    const prevUserLocationRef = useRef<[number, number] | null>(null);
+    const isFirstRender = useRef(true);
 
-        // También ante resize de ventana
-        const handleResize = () => map.invalidateSize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, [map]);
+    useEffect(() => {
+        // Solo centrar en el primer render
+        if (isFirstRender.current) {
+            map.setView(center, 13);
+            isFirstRender.current = false;
+            return;
+        }
+
+        // Solo centrar si la ubicación del usuario cambió
+        if (userLocation) {
+            const prevLocation = prevUserLocationRef.current;
+
+            // Si es la primera vez que se obtiene ubicación o cambió significativamente
+            if (
+                !prevLocation ||
+                Math.abs(prevLocation[0] - userLocation[0]) > 0.001 ||
+                Math.abs(prevLocation[1] - userLocation[1]) > 0.001
+            ) {
+                map.flyTo(userLocation, 14, {
+                    duration: 1.5,
+                    easeLinearity: 0.5,
+                });
+
+                prevUserLocationRef.current = userLocation;
+            }
+        }
+    }, [userLocation, map]);
 
     return null;
 };
@@ -70,57 +101,161 @@ const ResizeHelper: React.FC = () => {
 const MapView: React.FC<MapViewProps> = ({
     center,
     caregivers,
-    zoom = 13,
     userLocation,
     onMarkerClick,
 }) => {
+    // Handler para el click del botón
+    const handleDetailsClick = (e: React.MouseEvent, id: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Click en Ver detalles:', id);
+        onMarkerClick?.(id);
+    };
+
     return (
-        <div className="leaflet-wrapper">
+        <div style={{ width: "100%", height: "100%" }}>
             <MapContainer
                 center={center}
-                zoom={zoom}
-                className="leaflet-container-fixed"
+                zoom={13}
+                style={{ width: "100%", height: "100%" }}
+                zoomControl={true}
+                scrollWheelZoom={true}
+                dragging={true}
+                touchZoom={true}
+                doubleClickZoom={true}
             >
-                <ResizeHelper />
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <MapCenterController
+                    center={center}
+                    userLocation={userLocation}
+                />
 
-                {/* Marcador de ubicación del usuario */}
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                {/* Marcador del usuario */}
                 {userLocation && (
-                    <Marker position={userLocation} icon={userIcon}>
-                        <Popup>
-                            <strong>Tu ubicación</strong>
+                    <Marker
+                        position={userLocation}
+                        icon={createUserLocationIcon()}
+                    >
+                        <Popup
+                            className="custom-popup"
+                            closeButton={false}
+                            autoClose={false}
+                            closeOnClick={false}
+                        >
+                            <div
+                                style={{
+                                    padding: "8px",
+                                    textAlign: "center",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        fontSize: "24px",
+                                        marginBottom: "4px",
+                                    }}
+                                >
+                                    📍
+                                </div>
+                                <strong
+                                    style={{
+                                        fontSize: "13px",
+                                        color: "#222",
+                                    }}
+                                >
+                                    Tu ubicación
+                                </strong>
+                            </div>
                         </Popup>
                     </Marker>
                 )}
 
-                {/* Marcadores de cuidadores */}
+                {/* Marcadores de alojamientos */}
                 {caregivers.map((cg) => (
-                    <Marker key={cg.id} position={cg.location}>
-                        <Popup>
-                            <div style={{ minWidth: 150 }}>
-                                <strong>{cg.name}</strong>
-                                <div>Desde ${cg.price}</div>
-                                {cg.rating != null && (
-                                    <div>⭐ {cg.rating.toFixed(1)}</div>
+                    <Marker
+                        key={cg.id}
+                        position={cg.location}
+                        icon={createListingIcon()}
+                        eventHandlers={{
+                            click: (e) => {
+                                // Abrir el popup al hacer click en el marcador
+                                console.log('Click en marcador:', cg.id);
+                            },
+                        }}
+                    >
+                        <Popup
+                            className="custom-popup"
+                            maxWidth={260}
+                            closeButton={true}
+                            autoClose={false}
+                            closeOnClick={false}
+                            offset={[0, -10]}
+                        >
+                            <div className="popup-card">
+                                {cg.photos && cg.photos.length > 0 ? (
+                                    <img
+                                        src={cg.photos[0]}
+                                        alt={cg.name}
+                                        className="popup-image"
+                                        onError={(e) => {
+                                            (
+                                                e.target as HTMLImageElement
+                                            ).style.display = "none";
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="popup-image-placeholder">
+                                        🏡
+                                    </div>
                                 )}
-                                <button
-                                    type="button"
-                                    style={{
-                                        marginTop: 6,
-                                        width: "100%",
-                                        background: "#83bd7fff",
-                                        color: "#fff",
-                                        border: "none",
-                                        padding: "4px 6px",
-                                        borderRadius: 4,
-                                        cursor: "pointer",
-                                    }}
-                                    onClick={() =>
-                                        onMarkerClick && onMarkerClick(cg.id)
-                                    }
-                                >
-                                    Ver detalle
-                                </button>
+
+                                <div className="popup-content">
+                                    <div className="popup-header">
+                                        <h3>{cg.name}</h3>
+                                        <div className="popup-rating">
+                                            ⭐ {cg.rating.toFixed(1)}
+                                        </div>
+                                    </div>
+
+                                    {cg.description && (
+                                        <p className="popup-description">
+                                            {cg.description.length > 60
+                                                ? cg.description.substring(
+                                                      0,
+                                                      60
+                                                  ) + "..."
+                                                : cg.description}
+                                        </p>
+                                    )}
+
+                                    <div className="popup-details">
+                                        <span>🐾 {cg.capacity || 1}</span>
+                                        {cg.services &&
+                                            cg.services.length > 0 && (
+                                                <span>
+                                                    ✨ {cg.services.length}
+                                                </span>
+                                            )}
+                                    </div>
+
+                                    <div className="popup-price">
+                                        <strong>
+                                            {cg.currency || "USD"} ${cg.price}
+                                        </strong>
+                                        <span>/día</span>
+                                    </div>
+
+                                    <button
+                                        className="popup-button"
+                                        onClick={(e) => handleDetailsClick(e, cg.id)}
+                                        type="button"
+                                    >
+                                        Ver detalles →
+                                    </button>
+                                </div>
                             </div>
                         </Popup>
                     </Marker>

@@ -66,7 +66,11 @@ const Tab1: React.FC = () => {
     const [locationError, setLocationError] = useState<string>("");
     const [showLocationAlert, setShowLocationAlert] = useState(false);
 
-    const center: [number, number] = userLoc || [4.6097, -74.0817];
+    // Centro del mapa - solo cambia cuando se obtiene nueva ubicación
+    const [mapCenter, setMapCenter] = useState<[number, number]>([
+        4.6097, -74.0817,
+    ]);
+
     const history = useHistory();
 
     // Cargar alojamientos publicados
@@ -108,10 +112,10 @@ const Tab1: React.FC = () => {
             const matchesType =
                 petType === "all" || cg.petTypes?.includes(petType);
             const withinDistance =
-                !userLoc || distanceKm(center, cg.location) <= maxDistance;
+                !userLoc || distanceKm(userLoc, cg.location) <= maxDistance;
             return matchesQuery && matchesType && withinDistance;
         });
-    }, [caregivers, center, query, petType, maxDistance, userLoc]);
+    }, [caregivers, query, petType, maxDistance, userLoc]);
 
     useEffect(() => {
         storage.getFilters().then((saved) => {
@@ -142,22 +146,18 @@ const Tab1: React.FC = () => {
         setLoading(true);
 
         try {
-            // Verificar si Geolocation está disponible
             if (!navigator.geolocation) {
                 throw new Error(
                     "Geolocalización no disponible en este navegador"
                 );
             }
 
-            // Primero intentar con Capacitor (para apps nativas)
             try {
                 const { Geolocation } = await import("@capacitor/geolocation");
 
-                // Verificar permisos
                 const permission = await Geolocation.checkPermissions();
 
                 if (permission.location === "denied") {
-                    // Intentar solicitar permisos
                     const requestResult =
                         await Geolocation.requestPermissions();
                     if (requestResult.location === "denied") {
@@ -165,7 +165,6 @@ const Tab1: React.FC = () => {
                     }
                 }
 
-                // Obtener ubicación
                 const position = await Geolocation.getCurrentPosition({
                     enableHighAccuracy: true,
                     timeout: 10000,
@@ -178,9 +177,9 @@ const Tab1: React.FC = () => {
                 ];
 
                 setUserLoc(newLoc);
+                setMapCenter(newLoc); // Actualizar el centro del mapa
                 console.log("Ubicación obtenida (Capacitor):", newLoc);
             } catch (capacitorError) {
-                // Si falla Capacitor, intentar con la API del navegador
                 console.log(
                     "Intentando con API del navegador...",
                     capacitorError
@@ -193,6 +192,7 @@ const Tab1: React.FC = () => {
                             position.coords.longitude,
                         ];
                         setUserLoc(newLoc);
+                        setMapCenter(newLoc); // Actualizar el centro del mapa
                         console.log("Ubicación obtenida (Navigator):", newLoc);
                     },
                     (error) => {
@@ -238,7 +238,7 @@ const Tab1: React.FC = () => {
                 {viewMode === "map" ? (
                     <div className="leaflet-wrapper">
                         <MapView
-                            center={center}
+                            center={mapCenter}
                             caregivers={filtered}
                             userLocation={userLoc}
                             onMarkerClick={(id) =>
@@ -338,7 +338,15 @@ const Tab1: React.FC = () => {
                                                     {cg.price}/día
                                                 </div>
                                             </div>
-                                            <p className="description">
+                                            <p
+                                                className="description"
+                                                style={{
+                                                    //limitar la descripcion
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden",
+                                                    WebkitLineClamp: 3,
+                                                }}
+                                            >
                                                 {cg.description ||
                                                     "Sin descripción disponible"}
                                             </p>
@@ -543,7 +551,6 @@ const Tab1: React.FC = () => {
                         {
                             text: "Configuración",
                             handler: () => {
-                                // Abrir configuración del navegador/dispositivo
                                 console.log("Abrir configuración de permisos");
                             },
                         },

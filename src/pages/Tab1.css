@@ -8,7 +8,7 @@
   --petbnb-shadow: rgba(0, 0, 0, 0.12);
 }
 
-/* Contenedor del mapa - IMPORTANTE */
+/* ==================== MAPA ==================== */
 ion-content {
   --overflow: hidden;
 }
@@ -23,54 +23,106 @@ ion-content {
   height: 100%;
 }
 
-.leaflet-container-fixed {
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-/* Asegurar que el mapa ocupe todo el espacio */
 .leaflet-container {
   width: 100% !important;
   height: 100% !important;
   z-index: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Popups del mapa */
+.leaflet-container a.leaflet-popup-close-button {
+
+  right: 16px !important;
+}
+
+
+/* Controles de zoom más bonitos */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 20px !important;
+  border: none !important;
+  background: white !important;
+  color: var(--petbnb-text-dark) !important;
+  transition: all 0.2s !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f7f7f7 !important;
+  color: var(--petbnb-primary) !important;
+}
+
+/* Popups del mapa estilo Airbnb */
 .leaflet-popup-content-wrapper {
-  border-radius: 12px;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
+  padding: 0 !important;
+  overflow: hidden;
 }
 
 .leaflet-popup-content {
-  margin: 12px;
+  margin: 0 !important;
+  min-width: 280px;
 }
 
-/* Filtros flotantes con diseño Airbnb */
+.leaflet-popup-tip {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Marcadores personalizados */
+.custom-marker {
+  background: white;
+  border: 2px solid var(--petbnb-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.custom-marker:hover {
+  transform: scale(1.15);
+  z-index: 1000 !important;
+}
+
+/* ==================== FILTROS FLOTANTES ==================== */
 .filters {
-  width: 95%;
   position: absolute;
-  top: 81px;
-  left: 10px;
+  top: 16px;
+  left: 16px;
   z-index: 1000;
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px var(--petbnb-shadow);
-  max-width: 100%;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
   max-height: calc(100vh - 140px);
-  overflow-y: auto;
-  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid var(--petbnb-border);
+  overflow: hidden;
+  animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-@keyframes slideIn {
+@keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: translateX(-40px) scale(0.95);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
   }
 }
 
@@ -78,87 +130,45 @@ ion-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px 12px 20px;
-  border-bottom: 1px solid var(--petbnb-border);
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
 }
 
 .filter-header h3 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--petbnb-text-dark);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
 }
 
-.filters {
-  padding: 8px;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
-  flex: 0 0 auto;
-}
-
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 20px 12px 20px;
-  border-bottom: 1px solid var(--petbnb-border);
-}
-
-.filter-header h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--petbnb-text-dark);
-  letter-spacing: -0.3px;
-}
-
-.map-wrapper {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 320px;
-  height: calc(100vh - 56px - 220px);
-  /* toolbar aprox + filtros max */
-  background: #f5f5f5;
-}
-
-@media (max-width: 600px) {
-  .map-wrapper {
-    height: calc(100vh - 56px - 180px);
-  }
-}
-
-.leaflet-wrapper,
-.leaflet-container-fixed {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.leaflet-container {
-  background: #fafafa;
-}
-
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.leaflet-popup-content {
-  margin: 8px;
-  font-size: 13px;
-}
-
-.filters ion-searchbar,
-.filters ion-list,
-.filters ion-item {
+.filter-header ion-button {
   --background: transparent;
+  --color: var(--petbnb-primary);
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-weight: 600;
+  text-transform: none;
 }
 
-.filters ion-item {
-  --padding-start: 16px;
-  --inner-padding-end: 16px;
+/* Contenido del filtro con scroll suave */
+.filters>div:last-child {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+}
+
+.filters>div:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filters>div:last-child::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filters>div:last-child::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
 }
 
 .filters ion-searchbar {
@@ -166,63 +176,99 @@ ion-content {
   --border-radius: 32px;
   --box-shadow: none;
   --placeholder-color: var(--petbnb-text-medium);
-  padding: 8px 16px;
+  --icon-color: var(--petbnb-text-medium);
+  padding: 12px 20px;
+  --cancel-button-color: var(--petbnb-primary);
 }
 
 .filters ion-list {
   background: transparent;
-  padding: 0;
+  padding: 8px 0;
 }
 
 .filters ion-item {
   --background: transparent;
-  --padding-start: 20px;
-  --inner-padding-end: 20px;
-  --border-color: var(--petbnb-border);
-  --min-height: 56px;
+  --padding-start: 24px;
+  --inner-padding-end: 24px;
+  --border-color: #f0f0f0;
+  --min-height: 64px;
+  font-size: 15px;
+}
+
+.filters ion-label {
+  font-weight: 600 !important;
+  color: var(--petbnb-text-dark) !important;
 }
 
 .filters ion-select {
   font-weight: 500;
   color: var(--petbnb-text-dark);
+  --placeholder-color: var(--petbnb-text-medium);
 }
 
 .filters ion-range {
   --bar-background: #e8e8e8;
   --bar-background-active: var(--petbnb-primary);
   --knob-background: var(--petbnb-primary);
-  --knob-size: 28px;
+  --knob-size: 32px;
   --pin-background: var(--petbnb-primary);
-  padding: 8px 0;
+  --bar-height: 4px;
+  padding: 16px 0;
+}
+
+.filters ion-button {
+  margin: 0;
+  height: 48px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.filters ion-button[fill="solid"] {
+  --background: var(--petbnb-primary);
+  --background-hover: var(--petbnb-primary-dark);
+  --border-radius: 12px;
+}
+
+.filters ion-button[fill="outline"] {
+  --border-color: var(--petbnb-border);
+  --color: var(--petbnb-text-dark);
+  --border-radius: 12px;
+  --border-width: 2px;
+}
+
+.filters ion-button[color="success"] {
+  --background: #00a699;
 }
 
 .hint {
-  font-size: 0.8rem;
+  font-size: 13px;
   color: var(--petbnb-text-medium);
-  margin: 4px 0 0 0;
-  line-height: 1.4;
+  margin: 8px 0 0 0;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .filter-summary {
-  padding: 16px 20px;
-  border-top: 1px solid var(--petbnb-border);
-  background: #f7f7f7;
-  border-radius: 0 0 16px 16px;
+  padding: 20px 24px;
+  border-top: 1px solid #f0f0f0;
+  background: linear-gradient(to top, #fafafa, #ffffff);
   text-align: center;
 }
 
 .filter-summary p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: var(--petbnb-text-medium);
+  font-weight: 500;
 }
 
 .filter-summary strong {
-  color: var(--petbnb-text-dark);
-  font-weight: 600;
+  color: var(--petbnb-primary);
+  font-weight: 700;
 }
 
-/* Vista de lista estilo Airbnb */
+/* ==================== VISTA DE LISTA ==================== */
 .list-view {
   padding: 16px;
   padding-bottom: 100px;
@@ -233,111 +279,117 @@ ion-content {
 
 .caregiver-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
 }
 
 .caregiver-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: var(--petbnb-border);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  border-color: #f0f0f0;
 }
 
 .caregiver-card:active {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-image-container {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 240px;
   overflow: hidden;
-  background: #f0f0f0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .card-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .caregiver-card:hover .card-image {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .card-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  padding: 8px 14px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   color: var(--petbnb-text-dark);
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Indicador de múltiples fotos */
 .photo-count {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(0, 0, 0, 0.6);
+  bottom: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.7);
   color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
   font-weight: 600;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .card-content {
-  padding: 16px;
+  padding: 20px;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  gap: 12px;
 }
 
 .card-header h3 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--petbnb-text-dark);
   line-height: 1.3;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
   flex: 1;
-  padding-right: 12px;
 }
 
 .price-badge {
   background: linear-gradient(135deg, var(--petbnb-primary) 0%, var(--petbnb-primary-dark) 100%);
   color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 15px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.35);
 }
 
 .description {
   color: var(--petbnb-text-medium);
-  font-size: 0.9rem;
-  margin: 8px 0 12px 0;
-  line-height: 1.5;
+  font-size: 15px;
+  margin: 0 0 16px 0;
+  line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -346,57 +398,69 @@ ion-content {
 
 .card-footer {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid #f0f0f0;
 }
 
 .card-footer span {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.85rem;
+  gap: 6px;
+  font-size: 14px;
   color: var(--petbnb-text-medium);
-  font-weight: 500;
-}
-
-.rating-star {
-  color: #ffc107;
+  font-weight: 600;
 }
 
 .services-chips {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .services-chips ion-chip {
   margin: 0;
-  height: 28px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
   --background: #f0f0f0;
   --color: var(--petbnb-text-dark);
-  border-radius: 14px;
-  padding: 0 12px;
+  border-radius: 16px;
+  padding: 0 14px;
+  transition: all 0.2s;
 }
 
-/* FAB Buttons */
+.services-chips ion-chip:hover {
+  --background: var(--petbnb-primary);
+  --color: white;
+}
+
+/* ==================== FAB BUTTONS ==================== */
 ion-fab-button {
   --background: white;
   --background-activated: #f7f7f7;
   --background-hover: #f7f7f7;
   --color: var(--petbnb-text-dark);
-  --box-shadow: 0 4px 12px var(--petbnb-shadow);
+  --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   width: 56px;
   height: 56px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-fab-button:hover {
+  transform: scale(1.08);
+  --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+ion-fab-button:active {
+  transform: scale(0.95);
 }
 
 ion-fab-button[color="warning"] {
-  --background: var(--petbnb-primary);
+  --background: linear-gradient(135deg, #ff385c 0%, #e31c5f 100%);
   --color: white;
 }
 
@@ -411,64 +475,111 @@ ion-fab-button[color="secondary"] {
   --color: white;
 }
 
-/* Header mejorado */
-ion-header ion-toolbar {
-  --background: white;
-  --border-color: var(--petbnb-border);
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  min-height: 400px;
 }
 
-ion-header ion-title {
-  font-weight: 600;
-  color: var(--petbnb-text-dark);
-  letter-spacing: -0.3px;
-}
-
-ion-header ion-badge {
-  --background: var(--petbnb-primary);
-  --color: white;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  font-weight: 700;
-  border-radius: 12px;
-}
-
-/* Botones personalizados */
-.filters ion-button {
-  --border-radius: 12px;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-.filters ion-button[fill="clear"] {
-  --color: var(--petbnb-primary);
-}
-
-.filters ion-button[fill="outline"] {
-  --border-color: var(--petbnb-border);
-  --color: var(--petbnb-text-dark);
-  --border-width: 1.5px;
-}
-
-.filters ion-button[color="success"] {
-  --background: var(--petbnb-secondary);
-}
-
-.filters ion-button[color="primary"] {
-  --background: var(--petbnb-primary);
-}
-
-/* Loading skeleton */
-.skeleton-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
+.empty-state-icon {
+  font-size: 80px;
   margin-bottom: 24px;
-  animation: pulse 1.5s ease-in-out infinite;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
 }
 
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-state-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--petbnb-text-dark);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.empty-state-message {
+  font-size: 16px;
+  color: var(--petbnb-text-medium);
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .filters {
+    max-width: calc(100% - 32px);
+    left: 16px;
+    right: 16px;
+  }
+
+  ion-fab-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .card-image-container {
+    height: 200px;
+  }
+
+  .filter-header h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .filters {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: calc(100% - 24px);
+    border-radius: 20px;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .price-badge {
+    align-self: flex-start;
+  }
+
+  .list-view {
+    padding: 12px;
+  }
+
+  .caregiver-card {
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+}
+
+/* ==================== ANIMACIONES ==================== */
 @keyframes pulse {
 
   0%,
@@ -477,43 +588,21 @@ ion-header ion-badge {
   }
 
   50% {
-    opacity: 0.6;
+    opacity: 0.8;
   }
 }
 
-/* Scrollbar */
-.filters::-webkit-scrollbar {
-  width: 6px;
+.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
-.filters::-webkit-scrollbar-track {
-  background: transparent;
+/* Smooth transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-.filters::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 3px;
-}
-
-.filters::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-  .filters {
-    max-width: 100%;
-  }
-
-  ion-fab-button {
-    width: 48px;
-    height: 48px;
-  }
-}
-
-@media (max-width: 576px) {
-  .card-footer {
-    flex-direction: column;
-    gap: 8px;
-  }
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }

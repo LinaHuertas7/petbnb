@@ -1,4 +1,15 @@
-import { Caregiver } from "../components/map/MapView";
+export interface Caregiver {
+    id: string;
+    name: string;
+    location: [number, number];
+    price: number;
+    petTypes: string[];
+    rating: number;
+    capacity: number;
+    services: string[];
+    photos: string[];
+    description: string;
+}
 
 export const mockCaregivers: Caregiver[] = [
     {
