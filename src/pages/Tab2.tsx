@@ -151,7 +151,7 @@ const Tab2: React.FC = () => {
 
         try {
             const id = await storage.saveListing(draft, false);
-            await storage.deleteDraft();
+            await storage.deleteDraft(id);
 
             const res = await createListing(draft);
             setSubmitting(false);

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-interface User {
+// Exportar la interfaz User para que otros archivos la usen
+export interface User {
+    id: string;
     email: string;
     name: string;
     phone?: string;
@@ -16,7 +18,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+    children,
+}) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -29,7 +33,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email: string, password: string) => {
         // Simular login (aquí iría tu API real)
-        const userData = {
+        const userData: User = {
+            id: `user_${Date.now()}`, // Generar ID único
             email,
             name: email.split("@")[0],
         };
@@ -39,7 +44,8 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (data: any) => {
         // Simular registro (aquí iría tu API real)
-        const userData = {
+        const userData: User = {
+            id: `user_${Date.now()}`, // Generar ID único
             email: data.email,
             name: data.name,
             phone: data.phone,

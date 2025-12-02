@@ -77,7 +77,7 @@ const Tab1: React.FC = () => {
     const loadListings = async () => {
         setLoading(true);
         const published = await storage.getAllListings();
-        const mapped = published.map((listing) => ({
+        const mapped = published.map((listing: any) => ({
             id: listing.id,
             name: listing.title,
             description: listing.description,

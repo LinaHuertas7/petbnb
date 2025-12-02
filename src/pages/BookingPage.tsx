@@ -72,7 +72,7 @@ const BookingPage: React.FC = () => {
         setLoading(true);
         try {
             const allListings = await storage.getAllListings();
-            const foundListing = allListings.find((l) => l.id === id);
+            const foundListing = allListings.find((l: any) => l.id === id);
 
             if (!foundListing) {
                 setAlertMessage("Alojamiento no encontrado");
@@ -173,7 +173,7 @@ const BookingPage: React.FC = () => {
                 createdAt: new Date().toISOString(),
             };
 
-            await storage.saveBooking(booking);
+            await storage.saveBooking(booking as any);
             setShowSuccess(true);
         } catch (error) {
             console.error("Error creating booking:", error);

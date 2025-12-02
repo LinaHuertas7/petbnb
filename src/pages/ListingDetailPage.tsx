@@ -53,7 +53,7 @@ const ListingDetailPage: React.FC = () => {
         setLoading(true);
         try {
             const allListings = await storage.getAllListings();
-            const found = allListings.find((l) => l.id === id);
+            const found = allListings.find((l: any) => l.id === id);
             if (found) {
                 setListing(found);
             }
